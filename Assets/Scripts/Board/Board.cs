@@ -100,7 +100,7 @@ public class Board
                     }
                 }
 
-                item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
+                item.SetType(Utils.GetRandomNormalTypeExcept(types));
                 item.SetView();
                 item.SetViewRoot(m_root);
 
@@ -138,6 +138,7 @@ public class Board
 
     internal void FillGapsWithNewItems()
     {
+        Dictionary<NormalItem.eNormalType, int> curTypeAmountOnBoard = CurTypeAmountOnBoard();
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
@@ -147,7 +148,8 @@ public class Board
 
                 NormalItem item = new NormalItem();
 
-                item.SetType(Utils.GetRandomNormalType());
+                //item.SetType(Utils.GetRandomNormalType());
+                item.SetType(Utils.GetLeastNormalTypeExcept(ExcludedTypesList(cell), curTypeAmountOnBoard));
                 item.SetView();
                 item.SetViewRoot(m_root);
 
@@ -155,6 +157,64 @@ public class Board
                 cell.ApplyItemPosition(true);
             }
         }
+    }
+
+    internal Dictionary<NormalItem.eNormalType, int> CurTypeAmountOnBoard()
+    {
+        Dictionary<NormalItem.eNormalType, int> normalTypeAmountOnBoard = new Dictionary<NormalItem.eNormalType, int>();
+        for (int x = boardSizeX-1; x > 0; x--)
+        {
+            for (int y = boardSizeY-1; y > 0; y--)
+            {
+                Cell cell = m_cells[x, y];
+                if (cell.IsEmpty || cell.Item is BonusItem) continue;
+                if(cell.Item is NormalItem)
+                {
+                    NormalItem item = (NormalItem)cell.Item;
+                    if (!normalTypeAmountOnBoard.ContainsKey(item.ItemType))
+                    {
+                        normalTypeAmountOnBoard[item.ItemType] = 1;
+                    }
+                    else
+                    {
+                        normalTypeAmountOnBoard[item.ItemType]++;
+                    }
+                }
+            }
+        }
+
+        return normalTypeAmountOnBoard;
+    }
+
+    internal List<NormalItem.eNormalType> ExcludedTypesList(Cell cell)
+    {
+        List<NormalItem.eNormalType> types = new List<NormalItem.eNormalType>();
+        NormalItem item;
+        if ( cell.NeighbourUp && !cell.NeighbourUp.IsEmpty && cell.NeighbourUp.Item is NormalItem)
+        {
+            item = (NormalItem)cell.NeighbourUp.Item;
+            if(!types.Contains(item.ItemType)) types.Add(item.ItemType);
+        }
+
+        if ( cell.NeighbourBottom && !cell.NeighbourBottom.IsEmpty && cell.NeighbourBottom.Item is NormalItem)
+        {
+            item = (NormalItem)cell.NeighbourBottom.Item;
+            if (!types.Contains(item.ItemType)) types.Add(item.ItemType);
+        }
+
+        if (cell.NeighbourLeft && !cell.NeighbourLeft.IsEmpty && cell.NeighbourLeft.Item is NormalItem)
+        {
+            item = (NormalItem)cell.NeighbourLeft.Item;
+            if (!types.Contains(item.ItemType)) types.Add(item.ItemType);
+        }
+
+        if (cell.NeighbourRight && !cell.NeighbourRight.IsEmpty && cell.NeighbourRight.Item is NormalItem)
+        {
+            item = (NormalItem)cell.NeighbourRight.Item;
+            if (!types.Contains(item.ItemType)) types.Add(item.ItemType);
+        }
+
+        return types;
     }
 
     internal void ExplodeAllItems()

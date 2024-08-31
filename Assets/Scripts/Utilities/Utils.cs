@@ -15,7 +15,7 @@ public class Utils
         return result;
     }
 
-    public static NormalItem.eNormalType GetRandomNormalTypeExcept(NormalItem.eNormalType[] types)
+    public static NormalItem.eNormalType GetRandomNormalTypeExcept(List<NormalItem.eNormalType> types)
     {
         List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(types).ToList();
 
@@ -23,5 +23,31 @@ public class Utils
         NormalItem.eNormalType result = list[rnd];
 
         return result;
+    }
+
+    public static NormalItem.eNormalType GetLeastNormalTypeExcept(List<NormalItem.eNormalType> types, Dictionary<NormalItem.eNormalType, int> CurLeastTypeAmountOnBoard)
+    {
+        List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(types).ToList();
+
+        int leastAmount = -1;
+        NormalItem.eNormalType leastType = list[0];
+        foreach( NormalItem.eNormalType type in list )
+        {
+            if (CurLeastTypeAmountOnBoard.ContainsKey(type)) {
+                if (leastAmount == -1)
+                {
+                    leastAmount = CurLeastTypeAmountOnBoard[type];
+                    leastType = type;
+                }
+
+                if (leastAmount >= CurLeastTypeAmountOnBoard[type])
+                {
+                    leastAmount = CurLeastTypeAmountOnBoard[type];
+                    leastType = type;
+                }
+            }
+        }
+
+        return leastType;
     }
 }
