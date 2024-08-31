@@ -22,14 +22,14 @@ public class NormalItem : Item
         ItemType = type;
     }
 
-    //public override void SetView()
-    //{
-    //    PoolType type = GetPoolType();
-
-    //    //View = GameObject.Instantiate(prefab).transform;
-    //    View = SimplePool.Spawn<GameUnit>(type, Vector2.zero, Quaternion.identity).transform;
-    //    View.transform.localScale = Vector2.one;
-    //}
+    public override void SetView()
+    {
+        base.SetView();
+        if(View != null)
+        {
+            View.GetComponent<SpriteRenderer>().sprite = SOManager.Instance.ItemSkinSO.GetSprite(ItemType);
+        }
+    }
 
     protected override string GetPrefabName()
     {

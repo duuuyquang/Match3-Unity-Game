@@ -34,7 +34,7 @@ public class Item
         if(type != PoolType.none)
         {
             View = SimplePool.Spawn<GameUnit>(type, Vector2.zero, Quaternion.identity).transform;
-            View.transform.localScale = Vector2.one;
+            View.localScale = Vector2.one;
         }
     }
 
