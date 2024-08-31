@@ -12,21 +12,35 @@ public class Item
     public Transform View { get; private set; }
 
 
+    //public virtual void SetView()
+    //{
+    //    string prefabname = GetPrefabName();
+
+    //    if (!string.IsNullOrEmpty(prefabname))
+    //    {
+    //        GameObject prefab = Resources.Load<GameObject>(prefabname);
+    //        if (prefab)
+    //        {
+    //            View = GameObject.Instantiate(prefab).transform;
+    //        }
+    //    }
+    //}
+
     public virtual void SetView()
     {
-        string prefabname = GetPrefabName();
+        PoolType type = GetPoolType();
 
-        if (!string.IsNullOrEmpty(prefabname))
+        //View = GameObject.Instantiate(prefab).transform;
+        if(type != PoolType.none)
         {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
-            if (prefab)
-            {
-                View = GameObject.Instantiate(prefab).transform;
-            }
+            View = SimplePool.Spawn<GameUnit>(type, Vector2.zero, Quaternion.identity).transform;
+            View.transform.localScale = Vector2.one;
         }
     }
 
     protected virtual string GetPrefabName() { return string.Empty; }
+
+    protected virtual PoolType GetPoolType() { return PoolType.none; }
 
     public virtual void SetCell(Cell cell)
     {
@@ -101,7 +115,8 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    //GameObject.Destroy(View.gameObject);
+                    SimplePool.Despawn(View.GetComponent<GameUnit>());
                     View = null;
                 }
                 );
@@ -132,7 +147,8 @@ public class Item
 
         if (View)
         {
-            GameObject.Destroy(View.gameObject);
+            //GameObject.Destroy(View.gameObject);
+            SimplePool.ReleaseAll();
             View = null;
         }
     }

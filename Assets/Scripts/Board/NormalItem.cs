@@ -22,6 +22,15 @@ public class NormalItem : Item
         ItemType = type;
     }
 
+    //public override void SetView()
+    //{
+    //    PoolType type = GetPoolType();
+
+    //    //View = GameObject.Instantiate(prefab).transform;
+    //    View = SimplePool.Spawn<GameUnit>(type, Vector2.zero, Quaternion.identity).transform;
+    //    View.transform.localScale = Vector2.one;
+    //}
+
     protected override string GetPrefabName()
     {
         string prefabname = string.Empty;
@@ -51,6 +60,37 @@ public class NormalItem : Item
         }
 
         return prefabname;
+    }
+
+    protected override PoolType GetPoolType()
+    {
+        PoolType type = PoolType.itemNormal01;
+        switch (ItemType)
+        {
+            case eNormalType.TYPE_ONE:
+                type = PoolType.itemNormal01;
+                break;
+            case eNormalType.TYPE_TWO:
+                type = PoolType.itemNormal02;
+                break;
+            case eNormalType.TYPE_THREE:
+                type = PoolType.itemNormal03;
+                break;
+            case eNormalType.TYPE_FOUR:
+                type = PoolType.itemNormal04;
+                break;
+            case eNormalType.TYPE_FIVE:
+                type = PoolType.itemNormal05;
+                break;
+            case eNormalType.TYPE_SIX:
+                type = PoolType.itemNormal06;
+                break;
+            case eNormalType.TYPE_SEVEN:
+                type = PoolType.itemNormal07;
+                break;
+        }
+
+        return type;
     }
 
     internal override bool IsSameType(Item other)

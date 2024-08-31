@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static NormalItem;
 
 public class BonusItem : Item
 {
@@ -39,6 +40,27 @@ public class BonusItem : Item
         }
 
         return prefabname;
+    }
+
+    protected override PoolType GetPoolType()
+    {
+        PoolType type = PoolType.none;
+        switch (ItemType)
+        {
+            case eBonusType.NONE:
+                break;
+            case eBonusType.HORIZONTAL:
+                type = PoolType.itemBonusHorizontal;
+                break;
+            case eBonusType.VERTICAL:
+                type = PoolType.itemBonusVertical;
+                break;
+            case eBonusType.ALL:
+                type = PoolType.itemBonusBomb;
+                break;
+        }
+
+        return type;
     }
 
     internal override bool IsSameType(Item other)

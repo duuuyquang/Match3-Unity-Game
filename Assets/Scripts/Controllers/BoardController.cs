@@ -109,8 +109,11 @@ public class BoardController : MonoBehaviour
                 {
                     StopHints();
 
-                    Cell c1 = m_hitCollider.GetComponent<Cell>();
-                    Cell c2 = hit.collider.GetComponent<Cell>();
+                    //Cell c1 = m_hitCollider.GetComponent<Cell>();
+                    //Cell c2 = hit.collider.GetComponent<Cell>();
+                    Cell c1 = Cache.GetCell(m_hitCollider);
+                    Cell c2 = Cache.GetCell(hit.collider);
+
                     if (AreItemsNeighbor(c1, c2))
                     {
                         IsBusy = true;
@@ -236,11 +239,13 @@ public class BoardController : MonoBehaviour
     {
         m_board.ShiftDownItems();
 
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
+        yield return Cache.GetWaitForSeconds(0.2f);
 
         m_board.FillGapsWithNewItems();
 
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
+        yield return Cache.GetWaitForSeconds(0.2f);
 
         FindMatchesAndCollapse();
     }
@@ -249,11 +254,13 @@ public class BoardController : MonoBehaviour
     {
         m_board.ExplodeAllItems();
 
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
+        yield return Cache.GetWaitForSeconds(0.2f);
 
         m_board.Fill();
 
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
+        yield return Cache.GetWaitForSeconds(0.2f);
 
         FindMatchesAndCollapse();
     }
@@ -262,7 +269,8 @@ public class BoardController : MonoBehaviour
     {
         m_board.Shuffle();
 
-        yield return new WaitForSeconds(0.3f);
+        //yield return new WaitForSeconds(0.3f);
+        yield return Cache.GetWaitForSeconds(0.3f);
 
         FindMatchesAndCollapse();
     }
