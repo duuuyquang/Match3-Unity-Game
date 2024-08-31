@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 {
     public event Action<eStateGame> StateChangedAction = delegate { };
 
+    public eLevelMode m_curMode;
+
     public enum eLevelMode
     {
         TIMER,
@@ -96,10 +98,26 @@ public class GameManager : MonoBehaviour
             m_levelCondition = this.gameObject.AddComponent<LevelTime>();
             m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), this);
         }
-
+         
         m_levelCondition.ConditionCompleteEvent += GameOver;
 
         State = eStateGame.GAME_STARTED;
+        m_curMode = mode;
+    }
+
+    public void RestartLevel() 
+    {
+        State = eStateGame.GAME_OVER;
+        if (m_levelCondition != null)
+        {
+            m_levelCondition.ConditionCompleteEvent -= GameOver;
+
+            Destroy(m_levelCondition);
+            m_levelCondition = null;
+        }
+
+        ClearLevel();
+        LoadLevel(m_curMode);
     }
 
     public void GameOver()
